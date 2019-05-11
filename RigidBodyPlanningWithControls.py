@@ -116,8 +116,11 @@ def plan():
 
         # set the bounds for the control space
         cbounds = ob.RealVectorBounds(2)
-        cbounds.setLow(0.0)
-        cbounds.setHigh(3.0)
+        cbounds.setLow(1,-3.0)
+        cbounds.setHigh(1,3.0)
+
+        cbounds.setLow(0,0.0)
+        cbounds.setHigh(0,3.0)
         cspace.setBounds(cbounds)
 
         # define a simple setup class
@@ -143,9 +146,10 @@ def plan():
 
         # (optionally) set planner
         si = ss.getSpaceInformation()
-        # planner = oc.RRT(si)
+        # planner = oc.PDST(si)
+        planner = oc.RRT(si)
         # planner = oc.EST(si)
-        planner = oc.KPIECE1(si) # this is the default
+        #planner = oc.KPIECE1(si) # this is the default
         # SyclopEST and SyclopRRT require a decomposition to guide the search
         decomp = MyDecomposition(32, bounds)
         # planner = oc.SyclopEST(si, decomp)
@@ -155,7 +159,7 @@ def plan():
         si.setPropagationStepSize(.1)
 
         # attempt to solve the problem
-        solved = ss.solve(60.0)
+        solved = ss.solve(100.0)
 
         if solved:
             # print the path to screen
