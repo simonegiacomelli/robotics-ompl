@@ -56,19 +56,34 @@ def ddtr(vl, vr, l, dt):
         # Make sure you understand this!
         return mktr(0, R) @ mkrot(omega * dt) @ mktr(0, -R)
 
+
+def homogeneous(x,y,theta):
+    return np.array([[np.cos(theta), -np.sin(theta), x],
+                     [np.sin(theta),  np.cos(theta), y],
+                     [0,              0,             1]])
+
 def propagate(start, control, duration, state):
         """ returns the pose transform for a motion with duration dt of a differential
         drive robot with wheel speeds vl and vr and wheelbase l """
 
         vr = control[0]
         vl = control[1]
-        l = 0.2
+        l = 1
 
-        pose = ddtr(vl, vr, l, duration)
+        relative_pose = ddtr(vl, vr, l, duration)
+
+        
+
+
+        curr_pose = homogeneous(start.getX(), start.getY(), start.getYaw())
+
+        pose = curr_pose @ relative_pose
 
         x = pose[0, 2]
         y = pose[1, 2]
         yaw = np.arctan2(pose[0,1], pose[0, 0])
+
+        
 
         # print("x = ", x)
         # print("y = ", y)
@@ -78,13 +93,13 @@ def propagate(start, control, duration, state):
         # print("control[0] = ", control[0])
         # print("control[1] = ", control[1])
 
-        state.setX(start.getX() + x)
-        state.setY(start.getY() + y)
-        state.setYaw(start.getYaw() + yaw)
+        # state.setX(start.getX() + x)
+        # state.setY(start.getY() + y)
+        # state.setYaw(start.getYaw() + yaw)
 
-        # state.setX(x)
-        # state.setY(y)
-        # state.setYaw(yaw)
+        state.setX(x)
+        state.setY(y)
+        state.setYaw(yaw)
 
 def plan():
         # construct the state space we are planning in
@@ -119,8 +134,8 @@ def plan():
 
         # create a goal state
         goal = ob.State(space)
-        goal().setX(45.0)
-        goal().setY(15.0)
+        goal().setX(24.0)
+        goal().setY(6.0)
         goal().setYaw(0.0)
 
         # set the start and goal states
@@ -128,19 +143,19 @@ def plan():
 
         # (optionally) set planner
         si = ss.getSpaceInformation()
-        #planner = oc.RRT(si)
-        #planner = oc.EST(si)
-        #planner = oc.KPIECE1(si) # this is the default
+        # planner = oc.RRT(si)
+        # planner = oc.EST(si)
+        planner = oc.KPIECE1(si) # this is the default
         # SyclopEST and SyclopRRT require a decomposition to guide the search
         decomp = MyDecomposition(32, bounds)
-        planner = oc.SyclopEST(si, decomp)
+        # planner = oc.SyclopEST(si, decomp)
         #planner = oc.SyclopRRT(si, decomp)
         ss.setPlanner(planner)
         # (optionally) set propagation step size
-        #si.setPropagationStepSize(.1)
+        si.setPropagationStepSize(.1)
 
         # attempt to solve the problem
-        solved = ss.solve(20.0)
+        solved = ss.solve(60.0)
 
         if solved:
             # print the path to screen
