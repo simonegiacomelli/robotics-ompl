@@ -120,7 +120,7 @@ def plan():
         cbounds.setHigh(0,3.0)
 
         cbounds.setLow(1,0.0)
-        cbounds.setHigh(1,0.0)
+        cbounds.setHigh(1,3.0)
         cspace.setBounds(cbounds)
 
         # define a simple setup class
