@@ -62,7 +62,7 @@ def propagate(start, control, duration, state):
 
         vr = control[0]
         vl = control[1]
-        l = 1.0
+        l = 0.2
 
         pose = ddtr(vl, vr, l, duration)
 
@@ -78,13 +78,13 @@ def propagate(start, control, duration, state):
         # print("control[0] = ", control[0])
         # print("control[1] = ", control[1])
 
-        # state.setX(start.getX() + x)
-        # state.setY(start.getY() + y)
-        # state.setYaw(start.getYaw() + yaw)
+        state.setX(start.getX() + x)
+        state.setY(start.getY() + y)
+        state.setYaw(start.getYaw() + yaw)
 
-        state.setX(x)
-        state.setY(y)
-        state.setYaw(yaw)
+        # state.setX(x)
+        # state.setY(y)
+        # state.setYaw(yaw)
 
 def plan():
         # construct the state space we are planning in
@@ -119,8 +119,8 @@ def plan():
 
         # create a goal state
         goal = ob.State(space)
-        goal().setX(5.0)
-        goal().setY(1.0)
+        goal().setX(45.0)
+        goal().setY(15.0)
         goal().setYaw(0.0)
 
         # set the start and goal states
@@ -137,10 +137,10 @@ def plan():
         #planner = oc.SyclopRRT(si, decomp)
         ss.setPlanner(planner)
         # (optionally) set propagation step size
-        si.setPropagationStepSize(.1)
+        #si.setPropagationStepSize(.1)
 
         # attempt to solve the problem
-        solved = ss.solve(200.0)
+        solved = ss.solve(20.0)
 
         if solved:
             # print the path to screen
