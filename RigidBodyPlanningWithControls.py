@@ -81,7 +81,7 @@ def propagate(start, control, duration, state):
 
         x = pose[0, 2]
         y = pose[1, 2]
-        yaw = np.arctan2(pose[0,1], pose[0, 0])
+        yaw = np.arctan2(pose[1,0], pose[0, 0])
 
         
 
@@ -116,11 +116,11 @@ def plan():
 
         # set the bounds for the control space
         cbounds = ob.RealVectorBounds(2)
-        cbounds.setLow(1,-3.0)
-        cbounds.setHigh(1,3.0)
-
-        cbounds.setLow(0,0.0)
+        cbounds.setLow(0,-3.0)
         cbounds.setHigh(0,3.0)
+
+        cbounds.setLow(1,0.0)
+        cbounds.setHigh(1,0.0)
         cspace.setBounds(cbounds)
 
         # define a simple setup class
@@ -159,7 +159,7 @@ def plan():
         si.setPropagationStepSize(.1)
 
         # attempt to solve the problem
-        solved = ss.solve(100.0)
+        solved = ss.solve(40.0)
 
         if solved:
             # print the path to screen
