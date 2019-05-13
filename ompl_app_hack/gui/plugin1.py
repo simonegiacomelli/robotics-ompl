@@ -126,7 +126,7 @@ def plan():
     cbounds.setLow(0, -3.0)
     cbounds.setHigh(0, 3.0)
 
-    cbounds.setLow(1, -3.0)
+    cbounds.setLow(1, 0.0)
     cbounds.setHigh(1, 3.0)
     cspace.setBounds(cbounds)
 
@@ -161,6 +161,8 @@ def plan():
         with open('path.txt', 'w') as outFile:
             outFile.write(ss.getSolutionPath().printAsMatrix())
 
+def version():
+    return 2
 
 if __name__ == "__main__":
     plan()

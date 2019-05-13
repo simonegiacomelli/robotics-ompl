@@ -17,6 +17,8 @@ from os.path import abspath, dirname, join
 from decimal import Decimal
 from inspect import isclass
 import OpenGL
+import importlib
+
 OpenGL.ERROR_CHECKING = False
 from OpenGL import GL, GLU
 import webbrowser
@@ -156,7 +158,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.mainWidget.boundsWidget.bounds_high.setBounds)
 
         #self.commandWindow = CommandWindow(self) # not implemented yet
-        robotType = [t[0] for t in self.robotTypes].index('GSE3RigidBodyPlanning')
+        robotType = [t[0] for t in self.robotTypes].index('GKinematicCarPlanning')
         self.mainWidget.problemWidget.robotTypeSelect.setCurrentIndex(robotType)
 
         # connect to OMPL's console output (via OutputHandlers)
@@ -561,6 +563,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def solve(self):
         self.configureApp()
+        importlib.reload(plugin1)
         plugin1.configure(self.omplSetup)
         OMPL_DEBUG(str(self.omplSetup))
 
