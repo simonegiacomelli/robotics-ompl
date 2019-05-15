@@ -1,26 +1,51 @@
+#!/usr/bin/env python
 
-
-# !/usr/bin/env python
-
-# Author: Mark Moll
-
-from math import sin, cos
-from functools import partial
 import numpy as np
 
-try:
-    from ompl import base as ob
-    from ompl import control as oc
-    from ompl import app
-except ImportError:
-    # if the ompl module is not in the PYTHONPATH assume it is installed in a
-    # subdirectory of the parent directory called "py-bindings."
-    from os.path import abspath, dirname, join
-    import sys
+from ompl import base as ob
+from ompl import control as oc
+from ompl import app
 
-    sys.path.insert(0, join(dirname(dirname(abspath(__file__))), 'py-bindings'))
-    from ompl import base as ob
-    from ompl import control as oc
+#this method is called by ompl_app_custom.py
+def configure(ss):
+    # create a start state
+    cspace = ss.getControlSpace()
+
+    # set the bounds for the control space
+    cbounds = ob.RealVectorBounds(2)
+    cbounds.setLow(0, 0.0)
+    cbounds.setHigh(0, 3.0)
+
+    cbounds.setLow(1, 0.0)
+    cbounds.setHigh(1, 3.0)
+    cspace.setBounds(cbounds)
+
+    information = ss.getSpaceInformation()
+
+    information.setStatePropagator(oc.StatePropagatorFn(propagate))
+
+
+def propagate(start, control, duration, state):
+    """ returns the pose transform for a motion with duration dt of a differential
+    drive robot with wheel speeds vl and vr and wheelbase l """
+    vr = control[0]
+    vl = control[1]
+
+    l = 1
+
+    relative_pose = ddtr(vl, vr, l, duration)
+
+    curr_pose = homogeneous(start.getX(), start.getY(), start.getYaw())
+
+    pose = curr_pose @ relative_pose
+
+    x = pose[0, 2]
+    y = pose[1, 2]
+    yaw = np.arctan2(pose[1, 0], pose[0, 0])
+
+    state.setX(x)
+    state.setY(y)
+    state.setYaw(yaw)
 
 
 def mktr(x, y):
@@ -54,58 +79,6 @@ def homogeneous(x, y, theta):
                      [np.sin(theta), np.cos(theta), y],
                      [0, 0, 1]])
 
-
-def propagate(start, control, duration, state):
-    """ returns the pose transform for a motion with duration dt of a differential
-    drive robot with wheel speeds vl and vr and wheelbase l """
-    vr = control[0]
-    vl = control[1]
-
-    l = 1
-
-    relative_pose = ddtr(vl, vr, l, duration)
-
-    curr_pose = homogeneous(start.getX(), start.getY(), start.getYaw())
-
-    pose = curr_pose @ relative_pose
-
-    x = pose[0, 2]
-    y = pose[1, 2]
-    yaw = np.arctan2(pose[1, 0], pose[0, 0])
-
-    # print("x = ", x)
-    # print("y = ", y)
-    # print("yaw = ", yaw)
-
-    # print(control)
-    # print("control[0] = ", control[0])
-    # print("control[1] = ", control[1])
-
-    # state.setX(start.getX() + x)
-    # state.setY(start.getY() + y)
-    # state.setYaw(start.getYaw() + yaw)
-
-    state.setX(x)
-    state.setY(y)
-    state.setYaw(yaw)
-
-#this method is called by ompl_app_custom.py
-def configure(ss):
-    # create a start state
-    cspace = ss.getControlSpace()
-
-    # set the bounds for the control space
-    cbounds = ob.RealVectorBounds(2)
-    cbounds.setLow(0, -3.0)
-    cbounds.setHigh(0, 3.0)
-
-    cbounds.setLow(1, -3.0)
-    cbounds.setHigh(1, 3.0)
-    cspace.setBounds(cbounds)
-
-    information = ss.getSpaceInformation()
-
-    information.setStatePropagator(oc.StatePropagatorFn(propagate))
 
 
 def plan():
