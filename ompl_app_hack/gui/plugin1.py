@@ -77,36 +77,44 @@ def homogeneous(x, y, theta):
                      [np.sin(theta), np.cos(theta), y],
                      [0, 0, 1]])
 
-def plan(options):
-    """ Entry point for the planning """
+def plan(options, params):
 
+
+    print(params)
+
+    """ Entry point for the planning """
     # construct the state space we are planning in
     ss = app.KinematicCarPlanning()
 
-    ss.setEnvironmentMesh('../../resources/UniqueSolutionMaze_env.dae')
-    ss.setRobotMesh('../../resources/car2_planar_robot.dae')
-
-    cspace = ss.getControlSpace()
+    ss.setEnvironmentMesh(params["robot_mesh"])
+    ss.setRobotMesh(params["env_mesh"])
+    
+    # setting the real vector state space bounds
+    se2bounds = ob.RealVectorBounds(2)
+    se2bounds.setLow(params["lower_bound"])
+    se2bounds.setHigh(params["upper_bound"])
+    ss.getStateSpace().setBounds(se2bounds)
 
     # set the bounds for the control space
+    cspace = ss.getControlSpace()
     cbounds = ob.RealVectorBounds(2)
     cbounds.setLow(0, -3.0)
     cbounds.setHigh(0, 3.0)
 
-    cbounds.setLow(1, 0.0)
+    cbounds.setLow(1, params["lower_bound_cspace"])
     cbounds.setHigh(1, 3.0)
     cspace.setBounds(cbounds)
 
     # create a start state
     start = ob.State(ss.getSpaceInformation())
-    start().setX(3)
-    start().setY(-3)
+    start().setX(params["start_x"])
+    start().setY(params["start_y"])
     start().setYaw(0.0)
 
     # create a goal state
     goal = ob.State(ss.getSpaceInformation())
-    goal().setX(45)
-    goal().setY(25)
+    goal().setX(params["goal_x"])
+    goal().setY(params["goal_y"])
     goal().setYaw(0.0)
 
     # space information
@@ -137,11 +145,11 @@ def planOnce(ss):
             outFile.write(ss.getSolutionPath().printAsMatrix())
 
 def planBenchmark(ss, si):
-    # setting the real vector state space bounds
-    se2bounds = ob.RealVectorBounds(2)
-    se2bounds.setLow(0.0)
-    se2bounds.setHigh(10.0)
-    ss.getStateSpace().setBounds(se2bounds)
+#     # setting the real vector state space bounds
+#     se2bounds = ob.RealVectorBounds(2)
+#     se2bounds.setLow(-55.0)
+#     se2bounds.setHigh(55.0)
+#     ss.getStateSpace().setBounds(se2bounds)
 
     # instantiating the benchmark object
     b = ot.Benchmark(ss, "benchmarking")
@@ -159,9 +167,9 @@ def planBenchmark(ss, si):
 
     # instantiating the benchmark request
     req = ot.Benchmark.Request()
-    req.maxTime = 20.0 # time limit allowed for every planner execution (seconds)
+    req.maxTime = 30.0 # time limit allowed for every planner execution (seconds)
     req.maxMem = 1000.0 # maximum memory allowed for every planner execution (MB)
-    req.runCount = 50 # number of runs for every planner execution
+    req.runCount = 0 # 50 # number of runs for every planner execution
     req.displayProgress = True
 
     # running the benchmark
@@ -179,6 +187,38 @@ if __name__ == "__main__":
     parser.add_argument("--bench", action="store_true",
     help="Do benchmarking on provided planner list.")
 
-    plan(parser.parse_args())
+    parser.add_argument("--broken_wheel", action="store_true",
+    help="Run the broken left wheel configuration, else runs the sticking nose.")
+
+    params = {
+        "robot_mesh": '../../resources/car2-sticking-nose.dae',
+        "env_mesh": '../../resources/Maze_planar_env.dae',
+        "lower_bound_cspace": -3.0,
+        "start_x": -5.0,
+        "start_y": -1.0,
+        "goal_x": 45.0,
+        "goal_y": 25.0,
+        "upper_bound": 55.0,
+        "lower_bound": -55.0
+    }
+
+    params_broken = {
+        "robot_mesh": '../../resources/car2_planar_robot.dae',
+        "env_mesh": '../../resources/UniqueSolutionMaze_env.dae',
+        "lower_bound_cspace": 0.0,
+        "start_x": 3.0,
+        "start_y": -3.0,
+        "goal_x": 45.0,
+        "goal_y": 25.0,
+        "upper_bound": 50.0,
+        "lower_bound": -50.0
+    }
+
+    options = parser.parse_args()
+
+    if (options.broken_wheel):
+        plan(options, params_broken)
+    else:
+        plan(options, params)
 
 print(__file__,'loaded')
