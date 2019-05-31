@@ -11,8 +11,8 @@
 - ompl_app_hack/_root:
     - install-partial.sh: recompiles the app (no checks, no source download, no dependencies etc)
 - ompl_app_hack/src:
-    - KinematicCarPlanning.h: Modified file with a very small addition that allow us to expose the SpaceInformation through python bindings; in order to be able to change the propagator
-    - KinematicCarPlanning_orig.h: Original file
+    - KinematicCarPlanning(.cpp/.h): Modified file with a very small addition that allow us to expose the SpaceInformation through python bindings; in order to be able to change the propagator
+    - KinematicCarPlanning_orig(.cpp/.h): Original files
 - ompl_app_hack/gui:
     - ompl_app_custom.py: Custom app file
     - plugin1.py: Main code file, the configure method is used to set the propagator (for a custom kinematics), the benchmark method is used to run benchmarks
