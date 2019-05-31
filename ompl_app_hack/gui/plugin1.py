@@ -76,34 +76,30 @@ def ddtr(vl, vr, l, dt):
 
     return mktr(0, R) @ mkrot(omega * dt) @ mktr(0, -R)
 
-
 def homogeneous(x, y, theta):
     return np.array([[np.cos(theta), -np.sin(theta), x],
                      [np.sin(theta), np.cos(theta), y],
                      [0, 0, 1]])
 
-
 def benchmark(ss):
-
     # instantiating the benchmark object
     b = ot.Benchmark(ss, "benchmarking")
 
-    # b.addExperimentParameter("volume.min.x", "FLOAT", 55.0)
+    # getting the space information
     si = ss.getSpaceInformation()
+
     # adding the planners
-    # b.addPlanner(oc.EST(si))
+    b.addPlanner(oc.EST(si))
     b.addPlanner(oc.KPIECE1(si))
     b.addPlanner(oc.PDST(si))
     b.addPlanner(oc.RRT(si))
     b.addPlanner(oc.SST(si))
-    # b.addPlanner(oc.SyclopEST(si))
-    # b.addPlanner(oc.SyclopRRT(si))
 
     # instantiating the benchmark request
     req = ot.Benchmark.Request()
     req.maxTime = 15.0  # time limit allowed for every planner execution (seconds)
     req.maxMem = 1000.0  # maximum memory allowed for every planner execution (MB)
-    req.runCount = 1  # 50 # number of runs for every planner execution
+    req.runCount = 10 # number of runs for every planner execution
     req.displayProgress = True
 
     # running the benchmark
@@ -111,7 +107,8 @@ def benchmark(ss):
 
     # saving the result to a file of the form ompl_host_time.log
     b.saveResultsToFile();
-    print('done')
+    
+    print("Benchmarks done!")
 
 def plan(options, params):
     print(params)
@@ -161,8 +158,7 @@ def plan(options, params):
     if not options.bench:
         planOnce(ss)
     else:
-        planBenchmark(ss, si)
-
+        benchmark(ss)
 
 def planOnce(ss):
     """ Plan the path once,
@@ -179,45 +175,8 @@ def planOnce(ss):
         with open('path.txt', 'w') as outFile:
             outFile.write(ss.getSolutionPath().printAsMatrix())
 
-
-def planBenchmark(ss, si):
-    #     # setting the real vector state space bounds
-    #     se2bounds = ob.RealVectorBounds(2)
-    #     se2bounds.setLow(-55.0)
-    #     se2bounds.setHigh(55.0)
-    #     ss.getStateSpace().setBounds(se2bounds)
-
-    # instantiating the benchmark object
-    b = ot.Benchmark(ss, "benchmarking")
-
-    # b.addExperimentParameter("volume.min.x", "FLOAT", 55.0)
-
-    # adding the planners
-    b.addPlanner(oc.EST(si))
-    b.addPlanner(oc.KPIECE1(si))
-    b.addPlanner(oc.PDST(si))
-    b.addPlanner(oc.RRT(si))
-    b.addPlanner(oc.SST(si))
-    # b.addPlanner(oc.SyclopEST(si))
-    # b.addPlanner(oc.SyclopRRT(si))
-
-    # instantiating the benchmark request
-    req = ot.Benchmark.Request()
-    req.maxTime = 30.0  # time limit allowed for every planner execution (seconds)
-    req.maxMem = 1000.0  # maximum memory allowed for every planner execution (MB)
-    req.runCount = 0  # 50 # number of runs for every planner execution
-    req.displayProgress = True
-
-    # running the benchmark
-    b.benchmark(req)
-
-    # saving the result to a file of the form ompl_host_time.log
-    b.saveResultsToFile();
-
-
 def version():
     return 2
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
