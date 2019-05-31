@@ -138,6 +138,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.mainWidget.problemWidget.robotTypeSelect.currentIndexChanged[int].connect(
             self.setRobotType)
         self.mainWidget.solveWidget.solveButton.clicked.connect(self.solve)
+        self.mainWidget.solveWidget.benchmarkButton.clicked.connect(self.benchmark)
         self.mainWidget.solveWidget.clearButton.clicked.connect(self.clear)
         self.mainWidget.boundsWidget.resetButton.clicked.connect(self.resetBounds)
 
@@ -569,6 +570,14 @@ class MainWindow(QtWidgets.QMainWindow):
             str(self.mainWidget.problemWidget.objectiveSelect.currentText()),
             self.mainWidget.problemWidget.objectiveThreshold.value())
         self.omplSetup.setup()
+
+    def benchmark(self):
+        self.configureApp()
+        self.mainWidget.pluginWidget.save()
+        importlib.reload(plugin1)
+        plugin1.configure(self.omplSetup)
+        OMPL_DEBUG(str(self.omplSetup))
+        plugin1.benchmark(self.omplSetup)
 
     def solve(self):
         self.configureApp()
@@ -1522,6 +1531,7 @@ class SolveWidget(QtWidgets.QWidget):
     def __init__(self):
         super(SolveWidget, self).__init__()
         self.solveButton = QtWidgets.QPushButton('Solve')
+        self.benchmarkButton = QtWidgets.QPushButton('Benchmark')
         self.clearButton = QtWidgets.QPushButton('Clear')
         explorationVizLabel = QtWidgets.QLabel('Show:')
         self.explorationVizSelect = QtWidgets.QComboBox()
@@ -1541,12 +1551,13 @@ class SolveWidget(QtWidgets.QWidget):
 
         layout = QtWidgets.QGridLayout()
         layout.addWidget(self.solveButton, 0, 0)
-        layout.addWidget(self.clearButton, 0, 1)
-        layout.addWidget(explorationVizLabel, 0, 2, QtCore.Qt.AlignRight)
-        layout.addWidget(self.explorationVizSelect, 0, 3)
-        layout.addWidget(self.animateCheck, 0, 4)
-        layout.addWidget(speedlabel, 0, 5)
-        layout.addWidget(self.speedSlider, 0, 6)
+        layout.addWidget(self.benchmarkButton, 0, 1)
+        layout.addWidget(self.clearButton, 0, 2)
+        layout.addWidget(explorationVizLabel, 0, 3, QtCore.Qt.AlignRight)
+        layout.addWidget(self.explorationVizSelect, 0, 4)
+        layout.addWidget(self.animateCheck, 0, 5)
+        layout.addWidget(speedlabel, 0, 6)
+        layout.addWidget(self.speedSlider, 0, 7)
         self.setLayout(layout)
 
 

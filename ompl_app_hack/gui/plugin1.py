@@ -8,7 +8,8 @@ from ompl import control as oc
 from ompl import tools as ot
 from ompl import app
 
-#this method is called by ompl_app_custom.py
+
+# this method is called by ompl_app_custom.py
 def configure(ss):
     # create a start state
     cspace = ss.getControlSpace()
@@ -24,6 +25,7 @@ def configure(ss):
 
     si = ss.getSpaceInformation()
     si.setStatePropagator(oc.StatePropagatorFn(propagate))
+
 
 def propagate(start, control, duration, state):
     """ returns the pose transform for a motion with duration dt of a differential
@@ -47,17 +49,20 @@ def propagate(start, control, duration, state):
     state.setY(y)
     state.setYaw(yaw)
 
+
 def mktr(x, y):
     """ Returns the translation matrix """
     return np.array([[1, 0, x],
                      [0, 1, y],
                      [0, 0, 1]])
 
+
 def mkrot(theta):
     """ Returns the rotation matrix """
     return np.array([[np.cos(theta), -np.sin(theta), 0],
                      [np.sin(theta), np.cos(theta), 0],
                      [0, 0, 1]])
+
 
 def ddtr(vl, vr, l, dt):
     """ returns the pose transform for a motion with duration dt of a differential
@@ -71,15 +76,44 @@ def ddtr(vl, vr, l, dt):
 
     return mktr(0, R) @ mkrot(omega * dt) @ mktr(0, -R)
 
-def homogeneous(x, y, theta):
 
+def homogeneous(x, y, theta):
     return np.array([[np.cos(theta), -np.sin(theta), x],
                      [np.sin(theta), np.cos(theta), y],
                      [0, 0, 1]])
 
+
+def benchmark(ss):
+
+    # instantiating the benchmark object
+    b = ot.Benchmark(ss, "benchmarking")
+
+    # b.addExperimentParameter("volume.min.x", "FLOAT", 55.0)
+    si = ss.getSpaceInformation()
+    # adding the planners
+    # b.addPlanner(oc.EST(si))
+    b.addPlanner(oc.KPIECE1(si))
+    b.addPlanner(oc.PDST(si))
+    b.addPlanner(oc.RRT(si))
+    b.addPlanner(oc.SST(si))
+    # b.addPlanner(oc.SyclopEST(si))
+    # b.addPlanner(oc.SyclopRRT(si))
+
+    # instantiating the benchmark request
+    req = ot.Benchmark.Request()
+    req.maxTime = 15.0  # time limit allowed for every planner execution (seconds)
+    req.maxMem = 1000.0  # maximum memory allowed for every planner execution (MB)
+    req.runCount = 1  # 50 # number of runs for every planner execution
+    req.displayProgress = True
+
+    # running the benchmark
+    b.benchmark(req)
+
+    # saving the result to a file of the form ompl_host_time.log
+    b.saveResultsToFile();
+    print('done')
+
 def plan(options, params):
-
-
     print(params)
 
     """ Entry point for the planning """
@@ -88,7 +122,7 @@ def plan(options, params):
 
     ss.setEnvironmentMesh(params["robot_mesh"])
     ss.setRobotMesh(params["env_mesh"])
-    
+
     # setting the real vector state space bounds
     se2bounds = ob.RealVectorBounds(2)
     se2bounds.setLow(params["lower_bound"])
@@ -129,6 +163,7 @@ def plan(options, params):
     else:
         planBenchmark(ss, si)
 
+
 def planOnce(ss):
     """ Plan the path once,
     note: this function is used only when running the file as main file
@@ -144,16 +179,17 @@ def planOnce(ss):
         with open('path.txt', 'w') as outFile:
             outFile.write(ss.getSolutionPath().printAsMatrix())
 
+
 def planBenchmark(ss, si):
-#     # setting the real vector state space bounds
-#     se2bounds = ob.RealVectorBounds(2)
-#     se2bounds.setLow(-55.0)
-#     se2bounds.setHigh(55.0)
-#     ss.getStateSpace().setBounds(se2bounds)
+    #     # setting the real vector state space bounds
+    #     se2bounds = ob.RealVectorBounds(2)
+    #     se2bounds.setLow(-55.0)
+    #     se2bounds.setHigh(55.0)
+    #     ss.getStateSpace().setBounds(se2bounds)
 
     # instantiating the benchmark object
     b = ot.Benchmark(ss, "benchmarking")
-    
+
     # b.addExperimentParameter("volume.min.x", "FLOAT", 55.0)
 
     # adding the planners
@@ -162,14 +198,14 @@ def planBenchmark(ss, si):
     b.addPlanner(oc.PDST(si))
     b.addPlanner(oc.RRT(si))
     b.addPlanner(oc.SST(si))
-    #b.addPlanner(oc.SyclopEST(si))
-    #b.addPlanner(oc.SyclopRRT(si))
+    # b.addPlanner(oc.SyclopEST(si))
+    # b.addPlanner(oc.SyclopRRT(si))
 
     # instantiating the benchmark request
     req = ot.Benchmark.Request()
-    req.maxTime = 30.0 # time limit allowed for every planner execution (seconds)
-    req.maxMem = 1000.0 # maximum memory allowed for every planner execution (MB)
-    req.runCount = 0 # 50 # number of runs for every planner execution
+    req.maxTime = 30.0  # time limit allowed for every planner execution (seconds)
+    req.maxMem = 1000.0  # maximum memory allowed for every planner execution (MB)
+    req.runCount = 0  # 50 # number of runs for every planner execution
     req.displayProgress = True
 
     # running the benchmark
@@ -178,17 +214,19 @@ def planBenchmark(ss, si):
     # saving the result to a file of the form ompl_host_time.log
     b.saveResultsToFile();
 
+
 def version():
     return 2
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--bench", action="store_true",
-    help="Do benchmarking on provided planner list.")
+                        help="Do benchmarking on provided planner list.")
 
     parser.add_argument("--broken_wheel", action="store_true",
-    help="Run the broken left wheel configuration, else runs the sticking nose.")
+                        help="Run the broken left wheel configuration, else runs the sticking nose.")
 
     params = {
         "robot_mesh": '../../resources/car2-sticking-nose.dae',
@@ -221,4 +259,4 @@ if __name__ == "__main__":
     else:
         plan(options, params)
 
-print(__file__,'loaded')
+print(__file__, 'loaded')
