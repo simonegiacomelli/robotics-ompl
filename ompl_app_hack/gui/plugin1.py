@@ -97,9 +97,9 @@ def benchmark(ss):
 
     # instantiating the benchmark request
     req = ot.Benchmark.Request()
-    req.maxTime = 15.0  # time limit allowed for every planner execution (seconds)
+    req.maxTime = 60.0  # time limit allowed for every planner execution (seconds)
     req.maxMem = 1000.0  # maximum memory allowed for every planner execution (MB)
-    req.runCount = 10 # number of runs for every planner execution
+    req.runCount = 1 # number of runs for every planner execution
     req.displayProgress = True
 
     # running the benchmark

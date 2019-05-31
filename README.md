@@ -3,6 +3,9 @@
 ## 31/05/2019
 ## Students: Simone Giacomelli, Oleg Borisov and Olivier Chapeau
 
+### Video link
+[Video](https://drive.google.com/file/d/1oe3lE8woQCAxYJaEnkaA3JKRpn9tbAl1/view)
+
 ---
 ### Folders content
 - ompl_app_hack/_root:
@@ -14,7 +17,7 @@
     - ompl_app_custom.py: Custom app file
     - plugin1.py: Main code file, the configure method is used to set the propagator (for a custom kinematics), the benchmark method is used to run benchmarks
 - resources: Contains the meshes of the robots and the environments (.dae files) and the problems configuration files (.cfg files).
-- benchmark_results: results of some benchmarks we run
+- benchmark_results: results of some benchmarks we run (databases and an additional pdf file)
 
 ---
 ### Setting up the environment

@@ -2,44 +2,44 @@ OMPL version 1.4.2
 Experiment benchmarking
 0 experiment properties
 Running on ubuntu
-Starting at 2019-05-31 19:15:10
+Starting at 2019-05-31 18:59:01
 <<<|
-Properties of the state space 'SE2CompoundSpace144'
+Properties of the state space 'SE2CompoundSpace135'
   - signature: 6 4 3 1 2 2 1 
   - dimension: 3
-  - extent: 157.134
+  - extent: 142.992
   - sanity checks for state space passed
-  - probability of valid states: 0.197
-  - average length of a valid motion: 5.33823
-  - average number of samples drawn per second: sampleUniform()=3.93892e+06 sampleUniformNear()=4.77617e+06 sampleGaussian()=3.7048e+06
-Settings for the state space 'SE2CompoundSpace144'
+  - probability of valid states: 0.392
+  - average length of a valid motion: 4.71221
+  - average number of samples drawn per second: sampleUniform()=1.15194e+07 sampleUniformNear()=4.2983e+06 sampleGaussian()=4.8451e+06
+Settings for the state space 'SE2CompoundSpace135'
   - state validity check resolution: 1%
   - valid segment count factor: 1
   - state space:
-Compound state space 'SE2CompoundSpace144' of dimension 3 (locked) [
-Real vector state space 'RealVectorSpace145' of dimension 2 with bounds: 
-  - min: -55 -55 
-  - max: 55 55 
+Compound state space 'SE2CompoundSpace135' of dimension 3 (locked) [
+Real vector state space 'RealVectorSpace136' of dimension 2 with bounds: 
+  - min: -50 -50 
+  - max: 50 50 
  of weight 1
-SO2 state space 'SO2Space146'
+SO2 state space 'SO2Space137'
  of weight 0.5
 ]
 Registered projections:
   - <default>
 Projection of dimension 2
-Cell sizes (computed defaults): [5.5 5.5]
+Cell sizes (computed defaults): [5 5]
 
 Declared parameters:
 longest_valid_segment_fraction = 0.01
-projection.cellsize.0 = 1.63865e-315
-projection.cellsize.1 = 6.94919e-310
+projection.cellsize.0 = 5
+projection.cellsize.1 = 5
 projection.cellsize_factor = 0
 valid_segment_count_factor = 1
 Valid state sampler named uniform with parameters:
 nr_attempts = 100
   - control space:
-Real vector control space 'RealVectorControl[SE2CompoundSpace144]' with bounds: 
-  - min: 0 0 
+Real vector control space 'RealVectorControl[SE2CompoundSpace135]' with bounds: 
+  - min: 0 -3 
   - max: 3 3 
   - can propagate backward: yes
   - propagation step size: 0.2
@@ -57,15 +57,15 @@ good_score_factor = 0.9
 max_close_samples = 30
 Start states:
 Compound state [
-RealVectorState [-5 -1]
-SO2State [0]
+RealVectorState [3 -3]
+SO2State [-1.5708]
 ]
-Goal state, threshold = 0.1, memory address = 0x10d909e0, state = 
+Goal state, threshold = 0.1, memory address = 0x377ff40, state = 
 Compound state [
-RealVectorState [45 25]
+RealVectorState [45 17]
 SO2State [0]
 ]
-Optimization Objective: Path Length @0x12ed8e50
+Optimization Objective: Path Length @0x377d9f0
 Optimization Threshold: 10000
 Average state cost: 0
 There are 0 solutions
@@ -124,10 +124,10 @@ NUMA node0 CPU(s):   0,1
 Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon nopl xtopology tsc_reliable nonstop_tsc cpuid pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault invpcid_single pti ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xsaves arat flush_l1d arch_capabilities
 |>>>
 18439080023593432720 is the random seed
-60 seconds per run
+120 seconds per run
 1000 MB per run
 1 runs per planner
-304.258 seconds spent to collect the data
+609.8 seconds spent to collect the data
 1 enum type
 status|Unknown status|Invalid start|Invalid goal|Unrecognized goal type|Timeout|Approximate solution|Exact solution|Crash|Unknown status
 5 planners
@@ -135,10 +135,10 @@ control_EST
 7 common properties
 goal_bias = 0.05
 longest_valid_segment_fraction = 0.01
-projection.cellsize.0 = 1.63865e-315
-projection.cellsize.1 = 6.94919e-310
+projection.cellsize.0 = 5
+projection.cellsize.1 = 5
 projection.cellsize_factor = 0
-range = 31.4269
+range = 28.5984
 valid_segment_count_factor = 1
 13 properties for each run
 approximate solution BOOLEAN
@@ -155,7 +155,7 @@ status ENUM
 time REAL
 valid segment fraction REAL
 1 runs
-1; 1; 90088; 90089; 497.285; 1.09225; 0.641685; 80.4; 47; 0; 5; 60.0941; 0; 
+1; 1; 190139; 190140; 236.746; 1.32727; 0.128115; 366.2; 202; 0; 5; 120.115; 0; 
 .
 control_KPIECE1
 10 common properties
@@ -165,8 +165,8 @@ goal_bias = 0.05
 good_score_factor = 0.9
 longest_valid_segment_fraction = 0.01
 max_close_samples = 30
-projection.cellsize.0 = 1.63323e-315
-projection.cellsize.1 = 2.90739e-316
+projection.cellsize.0 = 5
+projection.cellsize.1 = 5
 projection.cellsize_factor = 0
 valid_segment_count_factor = 1
 13 properties for each run
@@ -184,14 +184,14 @@ status ENUM
 time REAL
 valid segment fraction REAL
 1 runs
-1; 1; 12885; 12886; 497.285; 1.343; 1.84515; 65.2; 64; 0; 5; 60.0541; 0; 
+1; 1; 26769; 26770; 283.926; 1.15365; 0.318736; 461.6; 381; 0; 5; 120.075; 0; 
 .
 control_PDST
 6 common properties
 goal_bias = 0.05
 longest_valid_segment_fraction = 0.01
-projection.cellsize.0 = 1.63323e-315
-projection.cellsize.1 = 2.90739e-316
+projection.cellsize.0 = 5
+projection.cellsize.1 = 5
 projection.cellsize_factor = 0
 valid_segment_count_factor = 1
 13 properties for each run
@@ -209,15 +209,15 @@ status ENUM
 time REAL
 valid segment fraction REAL
 1 runs
-1; 1; 114134; 114135; 497.285; 1.14898; 0.724628; 68; 70; 0; 5; 60.0321; 0; 
+1; 1; 166958; 166959; 374.938; 1.4003; 0.357756; 409.6; 347; 0; 5; 120.124; 0; 
 .
 control_RRT
 7 common properties
 goal_bias = 0.05
 intermediate_states = 0
 longest_valid_segment_fraction = 0.01
-projection.cellsize.0 = 1.63323e-315
-projection.cellsize.1 = 2.90739e-316
+projection.cellsize.0 = 5
+projection.cellsize.1 = 5
 projection.cellsize_factor = 0
 valid_segment_count_factor = 1
 13 properties for each run
@@ -235,14 +235,14 @@ status ENUM
 time REAL
 valid segment fraction REAL
 1 runs
-1; 1; 87009; 87010; 497.285; 0.972004; 0.641616; 116.6; 71; 0; 5; 60.0989; 0; 
+1; 1; 130877; 130878; 427.227; 1.25613; 0.251692; 448.4; 248; 0; 5; 120.031; 0; 
 .
 control_SST
 8 common properties
 goal_bias = 0.05
 longest_valid_segment_fraction = 0.01
-projection.cellsize.0 = 1.63323e-315
-projection.cellsize.1 = 2.90739e-316
+projection.cellsize.0 = 5
+projection.cellsize.1 = 5
 projection.cellsize_factor = 0
 pruning_radius = 0.1
 selection_radius = 0.2
@@ -262,5 +262,5 @@ status ENUM
 time REAL
 valid segment fraction REAL
 1 runs
-1; 1; 36343; 36345; 497.398; 0.889372; 0.743244; 56.4; 36; 0; 5; 60.0467; 0; 
+1; 1; 76223; 76225; 460.98; 1.35678; 0.116851; 471.2; 254; 0; 5; 120.041; 0; 
 .
